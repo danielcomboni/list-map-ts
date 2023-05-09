@@ -1,0 +1,27 @@
+{
+  "name": "list-map-ts",
+  "version": "1.0.1",
+  "description": "",
+  "main": "dist/index.js",
+	"types": "dist/index.d.ts",
+	"files": [
+		"/dist"
+	],
+  "scripts": {		
+    "build": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/danielcomboni/list-map-ts.git"
+  },
+  "author": "danielcomboni",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/danielcomboni/list-map-ts/issues"
+  },
+  "homepage": "https://github.com/danielcomboni/list-map-ts#readme",
+  "devDependencies": {
+    "typescript": "^5.0.4"
+  }
+}
