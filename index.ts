@@ -1,6 +1,11 @@
+import It = jest.It;
 
 class Stream<T> {
     // filter()
+}
+
+export interface ILinq<T> extends Iterable<T> {
+    // where(element: T)
 }
 
 export interface IList<T> extends Iterable<T> {
@@ -24,6 +29,11 @@ export interface IList<T> extends Iterable<T> {
 
     [Symbol.iterator](): Iterator<T>;
     forEach(callback: (item: T, index?: number) => any): void
+    first(callback: (item: T) => boolean): T | undefined
+
+    reverse(): void
+    where(callback: (item : T) => boolean): Array<T>
+    orderBy(propertyName: string, inAscendingOrder?: boolean): Array<T>
 }
 
 export class List<T> implements IList<T> {
@@ -92,7 +102,34 @@ export class List<T> implements IList<T> {
         }
     }
 
+    first(callback: (item: T) => boolean): T | undefined {
+        for (const item of this.items) {
+            if (callback(item)) return item
+        }
+        return undefined
+    }
 
+    reverse() {
+        this.items.reverse()
+    }
+
+    where(callback: (item: T) => boolean): Array<T> {
+        return this.items.filter(value => callback(value))
+    }
+
+    orderBy(propertyName: string, inAscendingOrder = true): Array<T> {
+        const arr= this.items.sort((a, b) => {
+            // @ts-ignore
+            if (a[propertyName] < b[propertyName]) return -1
+            // @ts-ignore
+            if (a[propertyName] > b [propertyName]) return 1;
+            return 0
+        })
+
+        if (inAscendingOrder) return arr
+        return arr.reverse()
+
+    }
 }
 
 export interface IKeyValueMap<K, V> extends Iterator<any> {
@@ -124,7 +161,6 @@ export interface IKeyValueMap<K, V> extends Iterator<any> {
 
     [Symbol.iterator](): Iterator<IKeyValueObject<K, V>>;
 
-    // forEach(callback: (key:K,value:V, index: number) => V, thisArg?: any): void
 }
 
 export interface IKeyValueObject<K, V> {

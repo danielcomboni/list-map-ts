@@ -55,6 +55,28 @@ describe('list tests', () =>{
         list.forEach((item: IUser, index: number) => {
             console.log(item, index)
         })
+    });
+
+    it('should run first() ', function () {
+        list.add(newUser({id: 1, name: ' Daniel', email: 'danie@mail.com'}))
+        list.add(newUser({id: 2, name: ' Adam', email: 'adam@mail.com'}))
+        const t = list.first(item => item.email === 'adam@mail.com')
+        console.log(t)
+    });
+
+    it('should where()', function () {
+        list.add(newUser({id: 1, name: ' Daniel', email: 'danie@mail.com'}))
+        list.add(newUser({id: 2, name: ' Adam', email: 'adam@mail.com'}))
+        const t = list.where(item => item.email.includes('danie'))
+        console.log(t)
+        console.log(list)
+    });
+
+    it('should run orderBy', function () {
+        list.add(newUser({id: 1, name: ' Daniel', email: 'danie@mail.com'}))
+        list.add(newUser({id: 2, name: ' Adam', email: 'adam@mail.com'}))
+        const t = list.orderBy('name', false)
+        console.log(t)
 
     });
 })
