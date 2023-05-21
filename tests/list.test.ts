@@ -17,7 +17,7 @@ const newUser = (u?: Partial<IUser>): IUser => {
     }
 }
 describe('list tests', () =>{
-    const list  = new List()
+    const list  = new List<IUser>()
 
     it('should be empty', function () {
         console.log(list)
@@ -46,5 +46,15 @@ describe('list tests', () =>{
         const flag = list.contains(newUser({id: 1, name: ' Daniel', email: 'danie@mail.com'}))
         console.log(flag)
         expect(list.size()).toEqual(1)
+    });
+
+    it('should run forEach', function () {
+        list.add(newUser({id: 1, name: ' Daniel', email: 'danie@mail.com'}))
+        list.add(newUser({id: 2, name: ' Adam', email: 'adam@mail.com'}))
+
+        list.forEach((item: IUser, index: number) => {
+            console.log(item, index)
+        })
+
     });
 })

@@ -1,4 +1,8 @@
 
+class Stream<T> {
+    // filter()
+}
+
 export interface IList<T> extends Iterable<T> {
     size(): number;
 
@@ -19,6 +23,7 @@ export interface IList<T> extends Iterable<T> {
     arrayToList(array: Array<T>): IList<T>;
 
     [Symbol.iterator](): Iterator<T>;
+    forEach(callback: (item: T, index?: number) => any): void
 }
 
 export class List<T> implements IList<T> {
@@ -78,8 +83,17 @@ export class List<T> implements IList<T> {
             yield element;
         }
     }
-}
 
+    forEach(callback: (item: T, index: number) => void): void {
+        let i = 0
+        for (const item1 of this.items) {
+            i += 1
+            callback(item1, i)
+        }
+    }
+
+    
+}
 
 export interface IKeyValueMap<K, V> extends Iterator<any> {
     put(key: K, value: V): void;
