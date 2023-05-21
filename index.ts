@@ -92,7 +92,7 @@ export class List<T> implements IList<T> {
         }
     }
 
-    
+
 }
 
 export interface IKeyValueMap<K, V> extends Iterator<any> {

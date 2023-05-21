@@ -14,6 +14,7 @@
    7. [get()](#check-if-list-contains) - gets an element by index
    8. [toArray()](#check-if-list-contains) - converts the list to an array
    9. [arrayToList()](#check-if-list-contains) - converts a provided array to list
+   10. [forEach()](#check-if-list-contains) - converts a provided array to list
 
 # Usage:
 <a name="install"></a>
@@ -107,6 +108,13 @@ console.log(list.isEmpty()) // prints false
 const flag = list.contains(newUser({id: 1, name: ' Daniel', email: 'danie@mail.com'}))
 console.log(flag) // prints true
         
+```
+
+### forEach loop
+```typescript
+        list.forEach((item: IUser, index: number) => {
+            console.log(item, index)
+        })
 ```
 
 ### examples for other methods will be coming soon but everything works fine
