@@ -9,6 +9,11 @@
    2. [size()](#size-of-list)
    3. [isEmpty()](#check-if-list-is-empty)
    4. [contains()](#check-if-list-contains)
+   5. [remove()](#check-if-list-contains) - removes an element from list
+   6. [clear()](#check-if-list-contains) - removes all elements from the list
+   7. [get()](#check-if-list-contains) - gets an element by index
+   8. [toArray()](#check-if-list-contains) - converts the list to an array
+   9. [arrayToList()](#check-if-list-contains) - converts a provided array to list
 
 # Usage:
 <a name="install"></a>
