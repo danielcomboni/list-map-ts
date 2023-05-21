@@ -26,7 +26,19 @@ describe('list tests', () =>{
 
     it('should add to list', function () {
         list.add(newUser({id: 1, name: ' Daniel', email: 'danie@mail.com'}))
+        list.add(newUser({id: 2, name: ' Adam', email: 'adam@mail.com'}))
         console.log(list)
+        expect(list.size()).toEqual(2)
+    });
+
+    it('should get size', function () {
+        const size = list.size()
+        console.log(size)
+    });
+
+    it('should contain this user', function () {
+        const flag = list.contains(newUser({id: 1, name: ' Daniel', email: 'danie@mail.com'}))
+        console.log(flag)
         expect(list.size()).toEqual(1)
     });
 
