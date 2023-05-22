@@ -13,9 +13,10 @@
    6. [clear()](#check-if-list-contains) - removes all elements from the list
    7. [get()](#check-if-list-contains) - gets an element by index
    8. [toArray()](#check-if-list-contains) - converts the list to an array
-   9. [arrayToList()](#check-if-list-contains) - converts a provided array to list
-   10. [forEach()](#check-if-list-contains) - loops through the entire list
-   11. [where()](#check-if-list-contains) - returns all the elements from the collection which satisfy a given condition.
+   9. [arrayToList()](#where-condition) - converts a provided array to list
+   10. [forEach()](#foreach-loop) - loops through the entire list
+   11. [where()](#where-condition) - returns all the elements from the collection which satisfy a given condition.
+   12. [orderBy()](#orderby) - returns an array ordered by the specified property in either descending or ascending order
 
 # Usage:
 <a name="install"></a>
@@ -120,11 +121,23 @@ console.log(flag) // prints true
 
 ### where condition
 ```typescript
-list.add(newUser({id: 1, name: ' Daniel', email: 'danie@mail.com'}))
-list.add(newUser({id: 2, name: ' Adam', email: 'adam@mail.com'}))
 const t = list.where(item => item.email.includes('danie'))
 console.log(t) // produces     [ { id: 1, name: ' Daniel', email: 'danie@mail.com' } ]
 
 
+```
+
+### orderBy
+```typescript
+        const t = list.orderBy('name', true)
+        console.log(t)
+/**
+ * prints
+ * 
+ [
+    { id: 2, name: ' Adam', email: 'adam@mail.com' },
+    { id: 1, name: ' Daniel', email: 'danie@mail.com' }
+ ]
+ */
 ```
 ### examples for other methods will be coming soon but everything works fine

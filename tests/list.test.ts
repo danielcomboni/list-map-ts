@@ -75,7 +75,7 @@ describe('list tests', () =>{
     it('should run orderBy', function () {
         list.add(newUser({id: 1, name: ' Daniel', email: 'danie@mail.com'}))
         list.add(newUser({id: 2, name: ' Adam', email: 'adam@mail.com'}))
-        const t = list.orderBy('name', false)
+        const t = list.orderBy('name', true)
         console.log(t)
 
     });
