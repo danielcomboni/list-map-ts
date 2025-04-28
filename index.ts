@@ -4,7 +4,7 @@ class Stream<T> {
     // filter()
 }
 
-interface IPositionDeterminantById {
+export interface IPositionDeterminantById {
     id: string | number | any
     index: number
 }
@@ -53,6 +53,8 @@ export interface IList<T> extends Iterable<T> {
 
      */
     enforcePositions(positionMap: IPositionDeterminantById[], returnListOrDefaultToArray?: boolean): IList<T> | Array<T>;
+
+    customFunc(fn: (...args: any[]) => this | IList<T> | Array<T>, ...args: any[]): this | IList<T> | Array<T>
 
     arrayToList(array: Array<T>): IList<T>;
 
@@ -185,6 +187,11 @@ export class List<T> implements IList<T> {
 
         return [...fixed, ...remaining]
 
+    }
+
+    customFunc(fn: (...args: any[]) => this | IList<T> | T[], ...args: any[]): this | IList<T> | T[] {
+        if(args) return fn(args);
+        return fn()
     }
 }
 
