@@ -4,6 +4,11 @@ class Stream<T> {
     // filter()
 }
 
+interface IPositionDeterminantById {
+    id: string | number | any
+    index: number
+}
+
 export interface ILinq<T> extends Iterable<T> {
     // where(element: T)
 }
@@ -25,6 +30,30 @@ export interface IList<T> extends Iterable<T> {
 
     toArray(): Array<T>;
 
+    /**
+     * 
+     * @param positionMap: e.g [
+            {
+                id: 1,
+                index: 1
+            },
+             {
+                id: 9,
+                index: 4
+            }
+        ]
+     * @param returnListOrDefaultToArray 
+     * 
+     *         const t = list.enforcePositions([
+            {
+                id: 1,
+                index: 1
+            }
+        ])
+
+     */
+    enforcePositions(positionMap: IPositionDeterminantById[], returnListOrDefaultToArray?: boolean): IList<T> | Array<T>;
+
     arrayToList(array: Array<T>): IList<T>;
 
     [Symbol.iterator](): Iterator<T>;
@@ -32,7 +61,7 @@ export interface IList<T> extends Iterable<T> {
     first(callback: (item: T) => boolean): T | undefined
 
     reverse(): void
-    where(callback: (item : T) => boolean): Array<T>
+    where(callback: (item: T) => boolean): Array<T>
     orderBy(propertyName: string, inAscendingOrder?: boolean): Array<T>
 }
 
@@ -118,16 +147,43 @@ export class List<T> implements IList<T> {
     }
 
     orderBy(propertyName: string, inAscendingOrder = true): Array<T> {
-        const arr= this.items.sort((a, b) => {
+        const arr = this.items.sort((a, b) => {
             // @ts-ignore
             if (a[propertyName] < b[propertyName]) return -1
             // @ts-ignore
-            if (a[propertyName] > b [propertyName]) return 1;
+            if (a[propertyName] > b[propertyName]) return 1;
             return 0
         })
 
         if (inAscendingOrder) return arr
         return arr.reverse()
+
+    }
+
+    enforcePositions(positionMap: IPositionDeterminantById[] = [], returnListOrDefaultToArray = false): T[] | IList<T> {
+        let fixed: T[] = []
+        let remaining: T[] = []
+
+        if (positionMap.length === 0) return this.items
+
+        for (const item of this.items) {
+            // @ts-ignore
+            const mapper = positionMap.filter(v => v.id === item['id'])[0]
+            if (!mapper) remaining.push(item);
+            else fixed[mapper.id] = item
+        }
+
+        // Fill in any undefined slots with remaining items
+        for (let i = 0; i < fixed.length; i++) {
+            if (fixed[i] === undefined && remaining.length > 0) {
+                // @ts-ignore
+                fixed[i] = remaining.shift();
+            }
+        }
+
+        if (returnListOrDefaultToArray) return this.arrayToList([...fixed, ...remaining]);
+
+        return [...fixed, ...remaining]
 
     }
 }
@@ -249,10 +305,10 @@ export class KeyValueMap<K, V> implements IKeyValueMap<K, V> {
     }
 
     keyValueMapToArray(): IKeyValueObject<K, V>[] {
-        return Array.from(this.pair, ([key, value]) => ({key, value}));
+        return Array.from(this.pair, ([key, value]) => ({ key, value }));
     }
 
-    * [Symbol.iterator](): Iterator<IKeyValueObject<K, V>> {
+    *[Symbol.iterator](): Iterator<IKeyValueObject<K, V>> {
         const inArrayForm = this.keyValueMapToArray();
         for (let element of inArrayForm) {
             yield element;
