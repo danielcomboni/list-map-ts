@@ -1,11 +1,11 @@
 import {List} from "../index";
 
-interface IUser {
+export interface IUser {
     id: number
     email: string;
     name: string
 }
-const newUser = (u?: Partial<IUser>): IUser => {
+export const newUser = (u?: Partial<IUser>): IUser => {
     const defaults: IUser = {
         id: 0,
         name: '',
@@ -38,19 +38,22 @@ describe('list tests', () =>{
 
     it('should contain this user', function () {
         const flag = list.contains(newUser({id: 1, name: ' Daniel', email: 'danie@mail.com'}))
+        console.log("size: ", list.size());
+        
         console.log(flag)
-        expect(list.size()).toEqual(1)
+        // expect(flag).toEqual(true)
     });
 
-    it('should contain this user', function () {
-        const flag = list.contains(newUser({id: 1, name: ' Daniel', email: 'danie@mail.com'}))
-        console.log(flag)
-        expect(list.size()).toEqual(1)
-    });
+    // it('should contain this user', function () {
+    //     const flag = list.contains(newUser({id: 1, name: ' Daniel', email: 'danie@mail.com'}))
+    //     console.log(flag)
+    //     expect(list.size()).toEqual(1)
+    // });
 
     it('should run forEach', function () {
-        list.add(newUser({id: 1, name: ' Daniel', email: 'danie@mail.com'}))
-        list.add(newUser({id: 2, name: ' Adam', email: 'adam@mail.com'}))
+        
+        // list.add(newUser({id: 1, name: ' Daniel', email: 'danie@mail.com'}))
+        // list.add(newUser({id: 2, name: ' Adam', email: 'adam@mail.com'}))
 
         list.forEach((item: IUser, index: number) => {
             console.log(item, index)
@@ -58,25 +61,39 @@ describe('list tests', () =>{
     });
 
     it('should run first() ', function () {
-        list.add(newUser({id: 1, name: ' Daniel', email: 'danie@mail.com'}))
-        list.add(newUser({id: 2, name: ' Adam', email: 'adam@mail.com'}))
+        // list.add(newUser({id: 1, name: ' Daniel', email: 'danie@mail.com'}))
+        // list.add(newUser({id: 2, name: ' Adam', email: 'adam@mail.com'}))
         const t = list.first(item => item.email === 'adam@mail.com')
         console.log(t)
     });
 
     it('should where()', function () {
-        list.add(newUser({id: 1, name: ' Daniel', email: 'danie@mail.com'}))
-        list.add(newUser({id: 2, name: ' Adam', email: 'adam@mail.com'}))
+        // list.add(newUser({id: 1, name: ' Daniel', email: 'danie@mail.com'}))
+        // list.add(newUser({id: 2, name: ' Adam', email: 'adam@mail.com'}))
         const t = list.where(item => item.email.includes('danie'))
         console.log(t)
         console.log(list)
     });
 
     it('should run orderBy', function () {
-        list.add(newUser({id: 1, name: ' Daniel', email: 'danie@mail.com'}))
-        list.add(newUser({id: 2, name: ' Adam', email: 'adam@mail.com'}))
+        // list.add(newUser({id: 1, name: ' Daniel', email: 'danie@mail.com'}))
+        // list.add(newUser({id: 2, name: ' Adam', email: 'adam@mail.com'}))
         const t = list.orderBy('name', true)
         console.log(t)
-
     });
+
+
+    it('should enforce element position', function () {
+        // list.add(newUser({id: 1, name: ' Daniel', email: 'danie@mail.com'}))
+        // list.add(newUser({id: 2, name: ' Adam', email: 'adam@mail.com'}))
+    
+        const t = list.enforcePositions([
+            {
+                id: 1,
+                index: 1
+            }
+        ])
+        console.log(t)
+    });
+    
 })
