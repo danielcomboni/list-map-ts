@@ -42,7 +42,7 @@ export interface IList<T> extends Iterable<T> {
                 index: 4
             }
         ]
-     * @param returnListOrDefaultToArray 
+     * @param returnListOrDefaultToArray: if true, returns the list
      * 
      *         const t = list.enforcePositions([
             {
