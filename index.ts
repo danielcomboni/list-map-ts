@@ -65,7 +65,7 @@ export interface IList<T> extends Iterable<T> {
     reverse(): void
     where(callback: (item: T) => boolean): Array<T>
     orderBy(propertyName: string, inAscendingOrder?: boolean): Array<T>
-    
+
 }
 
 export class List<T> implements IList<T> {
