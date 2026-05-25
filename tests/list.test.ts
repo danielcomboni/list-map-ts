@@ -84,8 +84,8 @@ describe('list tests', () =>{
 
 
     it('should enforce element position', function () {
-        // list.add(newUser({id: 1, name: ' Daniel', email: 'danie@mail.com'}))
-        // list.add(newUser({id: 2, name: ' Adam', email: 'adam@mail.com'}))
+        list.add(newUser({id: 1, name: ' Daniel', email: 'danie@mail.com'}))
+        list.add(newUser({id: 2, name: ' Adam', email: 'adam@mail.com'}))
     
         const t = list.enforcePositions([
             {
@@ -93,7 +93,16 @@ describe('list tests', () =>{
                 index: 1
             }
         ])
-        console.log(t)
+        console.log('enforcing position...',t)
+    });
+
+    it('should enforce element position by object', function () {
+        list.add(newUser({id: 1, name: ' Daniel', email: 'danie@mail.com'}))
+        list.add(newUser({id: 2, name: ' Adam', email: 'adam@mail.com'}))
+    
+        const t = list.enforcePositionsByObjectIndex(0,1)
+
+        console.log('enforcing position by index...',t)
     });
     
 })
