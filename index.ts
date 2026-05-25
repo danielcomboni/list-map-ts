@@ -1,4 +1,3 @@
-import It = jest.It;
 
 class Stream<T> {
     // filter()
@@ -128,8 +127,8 @@ export class List<T> implements IList<T> {
     forEach(callback: (item: T, index: number) => void): void {
         let i = 0
         for (const item1 of this.items) {
-            i += 1
             callback(item1, i)
+            i += 1
         }
     }
 
@@ -190,7 +189,7 @@ export class List<T> implements IList<T> {
     }
 
     customFunc(fn: (...args: any[]) => this | IList<T> | T[], ...args: any[]): this | IList<T> | T[] {
-        if(args) return fn(args);
+        if (args) return fn(args);
         return fn()
     }
 }
