@@ -626,8 +626,10 @@ describe('List Tests', () => {
         it('should enforce positions by object index', () => {
             const users = createTestUsers();
             users.forEach(user => list.add(user));
+            console.log("priort: ",list);
             
             const result = list.enforcePositionsByObjectIndex(0, 2);
+            console.log("after: ", result);
             
             expect((result as IUser[])[2]?.id).toBe(1);
             expect((result as IUser[])[0]?.id).toBe(2);

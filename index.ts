@@ -49,7 +49,7 @@ export interface IList<T> extends Iterable<T> {
      */
 
     enforcePositions(positionMap: IPositionDeterminantById[], returnListOrDefaultToArray?: boolean): IList<T> | Array<T>;
-
+    enforcePositionsByObjectIndex(oldIndex: number, newIndex: number, returnListOrDefaultToArray?: boolean): T[] | IList<T> 
     customFunc(fn: (...args: any[]) => this | IList<T> | Array<T>, ...args: any[]): this | IList<T> | Array<T>
 
     arrayToList(array: Array<T>): IList<T>;
