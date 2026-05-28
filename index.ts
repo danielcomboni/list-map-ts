@@ -1,8 +1,4 @@
 
-class Stream<T> {
-    // filter()
-}
-
 export interface IPositionDeterminantById {
     id: string | number | any
     index: number
@@ -66,6 +62,35 @@ export interface IList<T> extends Iterable<T> {
     where(callback: (item: T) => boolean): Array<T>
     orderBy(propertyName: string, inAscendingOrder?: boolean): Array<T>
 
+    addAll(elements: Iterable<T>): void;
+    addAtIndex(index: number, element: T): void;
+    set(index: number, element: T): T;
+    indexOf(element: T): number;
+    lastIndexOf(element: T): number;
+    subList(fromIndex: number, toIndex: number): IList<T>;
+    sort(comparator?: (a: T, b: T) => number): void;
+    shuffle(): void;
+    peek(): T | undefined;
+    pop(): T | undefined;
+    push(...elements: T[]): number;
+    shift(): T | undefined;
+    unshift(...elements: T[]): number;
+
+    // Functional methods
+    map<U>(callback: (item: T, index: number) => U): IList<U>;
+    filter(callback: (item: T, index: number) => boolean): IList<T>;
+    reduce<U>(callback: (accumulator: U, item: T, index: number) => U, initialValue: U): U;
+    every(callback: (item: T, index: number) => boolean): boolean;
+    some(callback: (item: T, index: number) => boolean): boolean;
+    find(callback: (item: T, index: number) => boolean): T | undefined;
+    findAll(callback: (item: T, index: number) => boolean): IList<T>;
+
+    // Utility methods
+    clone(): IList<T>;
+    equals(other: IList<T>): boolean;
+    join(separator?: string): string;
+    toString(): string;
+
 }
 
 export class List<T> implements IList<T> {
@@ -73,6 +98,112 @@ export class List<T> implements IList<T> {
 
     constructor() {
         this.items = new Array<T>();
+    }
+
+    subList(fromIndex: number, toIndex: number): IList<T> {
+        const subArray = this.items.slice(fromIndex, toIndex);
+        const subList = new List<T>();
+        subList.arrayToList(subArray);
+        return subList;
+    }
+    sort(comparator?: ((a: T, b: T) => number) | undefined): void {
+        this.items.sort(comparator);
+    }
+
+    shuffle(): void {
+        for (let i = this.items.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [this.items[i], this.items[j]] = [this.items[j], this.items[i]];
+        }
+    }
+
+    peek(): T | undefined {
+        return this.items[this.items.length - 1];
+    }
+
+    pop(): T | undefined {
+        return this.items.pop();
+    }
+
+    push(...elements: T[]): number {
+        return this.items.push(...elements);
+    }
+    shift(): T | undefined {
+        return this.items.shift();
+    }
+    unshift(...elements: T[]): number {
+        return this.items.unshift(...elements);
+    }
+    map<U>(callback: (item: T, index: number) => U): IList<U> {
+        const mappedArray = this.items.map(callback);
+        const mappedList = new List<U>();
+        mappedList.arrayToList(mappedArray);
+        return mappedList;
+    }
+    filter(callback: (item: T, index: number) => boolean): IList<T> {
+        const filteredArray = this.items.filter(callback);
+        const filteredList = new List<T>();
+        filteredList.arrayToList(filteredArray);
+        return filteredList;
+    }
+    reduce<U>(callback: (accumulator: U, item: T, index: number) => U, initialValue: U): U {
+        return this.items.reduce(callback, initialValue);
+    }
+    every(callback: (item: T, index: number) => boolean): boolean {
+        return this.items.every(callback);
+    }
+    some(callback: (item: T, index: number) => boolean): boolean {
+        return this.items.some(callback);
+    }
+    find(callback: (item: T, index: number) => boolean): T | undefined {
+        return this.items.find(callback);
+    }
+    findAll(callback: (item: T, index: number) => boolean): IList<T> {
+        const foundArray = this.items.filter(callback);
+        const foundList = new List<T>();
+        foundList.arrayToList(foundArray);
+        return foundList;
+    }
+    clone(): IList<T> {
+        const clonedList = new List<T>();
+        clonedList.arrayToList(this.toArray());
+        return clonedList;
+    }
+    equals(other: IList<T>): boolean {
+        if (this.size() !== other.size()) return false;
+        for (let i = 0; i < this.size(); i++) {
+            if (this.get(i) !== other.get(i)) return false;
+        }
+        return true;
+    }
+    join(separator?: string): string {
+        return this.items.join(separator);
+    }
+    toString(): string {
+        return this.items.toString();
+    }
+
+    lastIndexOf(element: T): number {
+        throw new Error("Method not implemented.");
+    }
+
+    indexOf(element: T): number {
+        return this.items.indexOf(element);
+    }
+
+    set(index: number, element: T): T {
+        this.items[index] = element;
+        return element;
+    }
+
+    addAtIndex(index: number, element: T): void {
+        this.items.splice(index, 0, element);
+    }
+
+    addAll(elements: Iterable<T>): void {
+        for (const element of elements) {
+            this.add(element);
+        }
     }
 
     size(): number {
@@ -259,6 +390,15 @@ export interface IKeyValueMap<K, V> extends Iterator<any> {
 
     keyValueMapToArray(): IKeyValueObject<K, V>[];
 
+    containsValue(value: V): boolean;
+    getOrDefault(key: K, defaultValue: V): V;
+    putIfAbsent(key: K, value: V): V | undefined;
+    computeIfAbsent(key: K, mappingFunction: (key: K) => V): V;
+    computeIfPresent(key: K, remappingFunction: (key: K, value: V) => V): V | undefined;
+    forEach(callback: (key: K, value: V, index: number) => void): void;
+    entrySet(): Iterable<IKeyValueObject<K, V>>;
+    merge(key: K, value: V, remappingFunction: (oldValue: V, newValue: V) => V): V | undefined;
+
     [Symbol.iterator](): Iterator<IKeyValueObject<K, V>>;
 
 }
@@ -273,6 +413,65 @@ export class KeyValueMap<K, V> implements IKeyValueMap<K, V> {
 
     constructor() {
         this.pair = new Map<K, V>();
+    }
+
+    containsValue(value: V): boolean {
+        for (let v of this.pair.values()) {
+            if (v === value) return true;
+        }
+        return false;
+    }
+
+    getOrDefault(key: K, defaultValue: V): V {
+        return this.pair.get(key) ?? defaultValue;
+    }
+
+    putIfAbsent(key: K, value: V): V | undefined {
+        if (!this.pair.has(key)) {
+            this.pair.set(key, value);
+            return undefined;
+        }
+        return this.pair.get(key);
+    }
+
+    computeIfAbsent(key: K, mappingFunction: (key: K) => V): V {
+        if (!this.pair.has(key)) {
+            const newValue = mappingFunction(key);
+            this.pair.set(key, newValue);
+            return newValue;
+        }
+        return this.pair.get(key) as V;
+    }
+
+    computeIfPresent(key: K, remappingFunction: (key: K, value: V) => V): V | undefined {
+        if (this.pair.has(key)) {
+            const oldValue = this.pair.get(key) as V;
+            const newValue = remappingFunction(key, oldValue);
+            this.pair.set(key, newValue);
+            return newValue;
+        }
+        return undefined;
+    }
+
+    forEach(callback: (key: K, value: V, index: number) => void): void {
+        this.forEach(callback)
+    }
+
+    entrySet(): Iterable<IKeyValueObject<K, V>> {
+        const array = this.keyValueMapToArray();
+        return array;
+    }
+
+    merge(key: K, value: V, remappingFunction: (oldValue: V, newValue: V) => V): V | undefined {
+        if (this.pair.has(key)) {
+            const oldValue = this.pair.get(key) as V;
+            const newValue = remappingFunction(oldValue, value);
+            this.pair.set(key, newValue);
+            return newValue;
+        } else {
+            this.pair.set(key, value);
+            return value;
+        }
     }
 
     put(key: K, value: V): void {
@@ -390,5 +589,242 @@ export class KeyValueMap<K, V> implements IKeyValueMap<K, V> {
     throw(e?: any): IteratorResult<any, any> {
         // @ts-ignore
         return undefined;
+    }
+}
+
+export class Stream<T> implements Iterable<T> {
+    private source: Iterable<T>;
+
+    constructor(source: Iterable<T>) {
+        this.source = source;
+    }
+
+    // Add this method to implement Iterable
+    *[Symbol.iterator](): Iterator<T> {
+        for (const item of this.source) {
+            yield item;
+        }
+    }
+
+    filter(predicate: (item: T) => boolean): Stream<T> {
+        const filtered = Array.from(this.source).filter(predicate);
+        return new Stream(filtered);
+    }
+
+    map<U>(mapper: (item: T) => U): Stream<U> {
+        const mapped = Array.from(this.source).map(mapper);
+        return new Stream(mapped);
+    }
+
+    // Add flatMap method
+    flatMap<U>(mapper: (item: T) => Iterable<U>): Stream<U> {
+        const result: U[] = [];
+        for (const item of this.source) {
+            const mapped = mapper(item);
+            for (const subItem of mapped) {
+                result.push(subItem);
+            }
+        }
+        return new Stream(result);
+    }
+
+    collect(): IList<T> {
+        const list = new List<T>();
+        for (const item of this.source) {
+            list.add(item);
+        }
+        return list;
+    }
+
+    toArray(): T[] {
+        return Array.from(this.source);
+    }
+
+    forEach(consumer: (item: T) => void): void {
+        for (const item of this.source) {
+            consumer(item);
+        }
+    }
+
+    reduce(accumulator: (a: T, b: T) => T): T | undefined;
+    reduce<U>(accumulator: (acc: U, item: T) => U, initialValue: U): U;
+    reduce(accumulator: any, initialValue?: any): any {
+        const arr = Array.from(this.source);
+        if (initialValue !== undefined) {
+            return arr.reduce(accumulator, initialValue);
+        }
+        return arr.reduce(accumulator);
+    }
+
+    distinct(): Stream<T> {
+        const unique = Array.from(new Set(this.source));
+        return new Stream(unique);
+    }
+
+    limit(maxSize: number): Stream<T> {
+        const limited = Array.from(this.source).slice(0, maxSize);
+        return new Stream(limited);
+    }
+
+    skip(n: number): Stream<T> {
+        const skipped = Array.from(this.source).slice(n);
+        return new Stream(skipped);
+    }
+}
+
+export class Optional<T> {
+    private constructor(private value: T | null | undefined) { }
+
+    static of<T>(value: T): Optional<T> {
+        if (value === null || value === undefined) {
+            throw new Error("value cannot be null or undefined");
+        }
+        return new Optional(value);
+    }
+
+    static ofNullable<T>(value: T | null | undefined): Optional<T> {
+        return new Optional(value);
+    }
+
+    static empty<T>(): Optional<T> {
+        return new Optional<T>(null);
+    }
+
+    isPresent(): boolean {
+        return this.value !== null && this.value !== undefined;
+    }
+
+    isEmpty(): boolean {
+        return !this.isPresent();
+    }
+
+    get(): T {
+        if (this.isEmpty()) {
+            throw new Error("No value present");
+        }
+        return this.value!;
+    }
+
+    orElse(other: T): T {
+        return this.isPresent() ? this.value! : other;
+    }
+
+    orElseGet(supplier: () => T): T {
+        return this.isPresent() ? this.value! : supplier();
+    }
+
+    orElseThrow<E extends Error>(errorSupplier: () => E): T {
+        if (this.isEmpty()) {
+            throw errorSupplier();
+        }
+        return this.value!;
+    }
+
+    map<U>(mapper: (value: T) => U): Optional<U> {
+        if (this.isEmpty()) {
+            return Optional.empty();
+        }
+        return Optional.ofNullable(mapper(this.value!));
+    }
+
+    flatMap<U>(mapper: (value: T) => Optional<U>): Optional<U> {
+        if (this.isEmpty()) {
+            return Optional.empty();
+        }
+        return mapper(this.value!);
+    }
+
+    filter(predicate: (value: T) => boolean): Optional<T> {
+        if (this.isEmpty() || !predicate(this.value!)) {
+            return Optional.empty();
+        }
+        return this;
+    }
+
+    ifPresent(consumer: (value: T) => void): void {
+        if (this.isPresent()) {
+            consumer(this.value!);
+        }
+    }
+}
+
+export interface IStack<T> {
+    push(element: T): void;
+    pop(): T | undefined;
+    peek(): T | undefined;
+    isEmpty(): boolean;
+    size(): number;
+}
+
+export class Stack<T> implements IStack<T> {
+    private list: IList<T>;
+
+    constructor() {
+        this.list = new List<T>();
+    }
+
+    push(element: T): void {
+        this.list.add(element);
+    }
+
+    pop(): T | undefined {
+        if (this.isEmpty()) return undefined;
+        const lastIndex = this.list.size() - 1;
+        const element = this.list.get(lastIndex);
+        this.list.remove(element);
+        return element;
+    }
+
+    peek(): T | undefined {
+        if (this.isEmpty()) return undefined;
+        return this.list.get(this.list.size() - 1);
+    }
+
+    isEmpty(): boolean {
+        return this.list.isEmpty();
+    }
+
+    size(): number {
+        return this.list.size();
+    }
+}
+
+export interface IQueue<T> {
+    enqueue(element: T): void;
+    dequeue(): T | undefined;
+    front(): T | undefined;
+    isEmpty(): boolean;
+    size(): number;
+}
+
+export class Queue<T> implements IQueue<T> {
+    private list: IList<T>;
+
+    constructor() {
+        this.list = new List<T>();
+    }
+
+    enqueue(element: T): void {
+        this.list.add(element);
+    }
+
+    dequeue(): T | undefined {
+        if (this.isEmpty()) return undefined;
+        const element = this.list.get(0);
+        this.list.remove(element);
+        return element;
+    }
+
+    front(): T | undefined {
+        if (this.isEmpty()) return undefined;
+        return this.list.get(0);
+    }
+
+    isEmpty(): boolean {
+        return this.list.isEmpty();
+    }
+
+    size(): number {
+        return this.list.size();
     }
 }
