@@ -49,7 +49,7 @@ export interface IList<T> extends Iterable<T> {
      */
 
     enforcePositions(positionMap: IPositionDeterminantById[], returnListOrDefaultToArray?: boolean): IList<T> | Array<T>;
-    enforcePositionsByObjectIndex(oldIndex: number, newIndex: number, returnListOrDefaultToArray?: boolean): T[] | IList<T> 
+    enforcePositionsByObjectIndex(oldIndex: number, newIndex: number, returnListOrDefaultToArray?: boolean): T[] | IList<T>
     customFunc(fn: (...args: any[]) => this | IList<T> | Array<T>, ...args: any[]): this | IList<T> | Array<T>
 
     arrayToList(array: Array<T>): IList<T>;
@@ -323,6 +323,7 @@ export class List<T> implements IList<T> {
     }
     */
 
+    /*
     enforcePositions(positionMap: IPositionDeterminantById[] = [], returnListOrDefaultToArray = false): T[] | IList<T> {
         let fixed: (T | undefined)[] = new Array(positionMap.length)
         let remaining: T[] = []
@@ -346,7 +347,33 @@ export class List<T> implements IList<T> {
         if (returnListOrDefaultToArray) return this.arrayToList(result);
         return result;
     }
+    */
 
+    enforcePositions(positionMap: IPositionDeterminantById[] = [], returnListOrDefaultToArray = false): T[] | IList<T> {
+        let fixed: (T | undefined)[] = new Array(positionMap.length);
+        let remaining: T[] = [];
+
+        for (const item of this.items) {
+            // @ts-ignore
+            const mapper = positionMap.find(v => v.id === item['id']);
+            if (!mapper) remaining.push(item);
+            else fixed[mapper.index] = item;
+        }
+
+        for (let i = 0; i < fixed.length; i++) {
+            if (fixed[i] === undefined && remaining.length > 0) {
+                fixed[i] = remaining.shift();
+            }
+        }
+
+        const result = [...fixed.filter(x => x !== undefined), ...remaining] as T[];
+        this.items = result;  // IMPORTANT: Update internal state
+
+        if (returnListOrDefaultToArray) return this;
+        return result;
+    }
+
+    /*
     enforcePositionsByObjectIndex(oldIndex: number, newIndex: number, returnListOrDefaultToArray = false): T[] | IList<T> {
         const arr = this.toArray();
         // Remove 1 item from the old position
@@ -354,6 +381,17 @@ export class List<T> implements IList<T> {
         // Insert the item at the new position
         arr.splice(newIndex, 0, element);
         if (returnListOrDefaultToArray) return this.arrayToList(arr);
+        return arr;
+    }
+    */
+
+    enforcePositionsByObjectIndex(oldIndex: number, newIndex: number, returnListOrDefaultToArray = false): T[] | IList<T> {
+        const arr = this.toArray();
+        const [element] = arr.splice(oldIndex, 1);
+        arr.splice(newIndex, 0, element);
+        // ALWAYS update the internal items
+        this.items = arr;  // Important: update the internal state
+        if (returnListOrDefaultToArray) return this;
         return arr;
     }
 
